@@ -1,7 +1,7 @@
-# Compact EBMA (DSMA) & Static EBCM simulator
+# Compact DSMA & CM simulator
 # - Matches R0 across models
 # - Computes mean infected degree ⟨k⟩_I for both models
-# - Exports trajectories.csv and simulation_results.csv with the same schemas
+# - Exports trajectories.csv and simulation_results.csv
 
 import numpy as np
 import pandas as pd
@@ -11,7 +11,7 @@ from scipy.integrate import solve_ivp
 from scipy.optimize import brentq
 
 # -----------------------------
-# Degree distributions (minimal set)
+# Degree distributions
 # -----------------------------
 def degree_distribution(dist_type, kmax, alpha=None, poisson_mean=None):
     k = np.arange(1, kmax + 1)
@@ -168,7 +168,7 @@ def get_trajectories(R0_target, alpha, kmax=30, gamma=1.0, rho_seed=1e-6,
         "alpha": alpha, "R0_target": R0_target
     })
 
-    # CM series + mean ⟨k⟩_I via integrating factor
+    # CM series + mean ⟨k⟩_I
     theta_t = sol_c.y[:len(k), :].T
     R_c = sol_c.y[-1]
     S_c = np.sum(Pk * ((Q.T @ theta_t.T).T ** k), axis=1)
@@ -210,7 +210,7 @@ def get_trajectories(R0_target, alpha, kmax=30, gamma=1.0, rho_seed=1e-6,
     return df_e, df_c
 
 # -----------------------------
-# One-shot run for a config → summary row (same fields as your correct solver)
+# One-shot run for a config → summary row
 # -----------------------------
 def simulate_summary(config, dist_name_for_output=None):
     dist_type   = config["dist_type"]
@@ -295,7 +295,7 @@ if __name__ == "__main__":
         "t_points": 40000,
     }
 
-    # ---- Trajectories (same as your correct solver) ----
+    # ---- Trajectories ----
     traj_file = "trajectories.csv"
     if os.path.exists(traj_file):
         os.remove(traj_file)
